@@ -1,0 +1,2 @@
+const Employee = require("../Models/EmpModel");
+

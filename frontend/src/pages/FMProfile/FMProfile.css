@@ -1,0 +1,74 @@
+.fm-profile-container {
+    text-align: center;
+    padding: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f4f4f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading style */
+.fm-profile-container h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Profile information styling */
+.fm-profile-container p {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #555;
+    margin: 10px 0;
+}
+
+/* Label style for stronger text */
+.fm-profile-container p strong {
+    color: #333;
+}
+
+/* Button styling */
+.fm-profile-button {
+    margin: 10px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Update button */
+.fm-profile-button-update {
+    background-color: #4CAF50; /* Green for update */
+    color: white;
+}
+
+/* Delete button */
+.fm-profile-button-delete {
+    background-color: #f44336; /* Red for delete */
+    color: white;
+}
+
+/* Button hover effect */
+.fm-profile-button:hover {
+    transform: scale(1.05);
+}
+
+.fm-profile-button-update:hover {
+    background-color: #45a049;
+}
+
+.fm-profile-button-delete:hover {
+    background-color: #e53935;
+}
+
+/* Button focus effect */
+.fm-profile-button:focus {
+    outline: none;
+}
