@@ -1,0 +1,372 @@
+/* ===== Base Styles ===== */
+:root {
+  --primary-color: #ffc107; /* Yellow */
+  --secondary-color: #607d8b; /* Grey */
+  --dark-grey: #455a64;
+  --light-grey: #cfd8dc;
+  --white: #ffffff;
+  --black: #212121;
+  --success: #4caf50;
+  --warning: #ff9800;
+  --danger: #f44336;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: var(--black);
+  line-height: 1.6;
+}
+
+/* ===== Dashboard Container ===== */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--white);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+}
+
+/* ===== Search & Filter Section ===== */
+.search-filter-section {
+  background-color: var(--light-grey);
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.search-filter-section h2 {
+  color: var(--dark-grey);
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.search-container {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-button {
+  padding: 12px 20px;
+  background-color: var(--primary-color);
+  color: var(--black);
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #ffb300;
+}
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--dark-grey);
+  font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: var(--white);
+}
+
+.filter-group input[type="date"] {
+  padding: 9px;
+}
+
+.reset-filters {
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: background-color 0.3s;
+}
+
+.reset-filters:hover {
+  background-color: var(--dark-grey);
+}
+
+.results-count {
+  font-style: italic;
+  color: var(--secondary-color);
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+/* ===== Report Buttons ===== */
+.report-buttons {
+  margin-bottom: 30px;
+}
+
+.report-buttons h2 {
+  color: var(--dark-grey);
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.buttons-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.report-button {
+  padding: 15px;
+  background-color: var(--primary-color);
+  color: var(--black);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.report-button:hover {
+  background-color: #ffb300;
+}
+
+/* ===== Forms ===== */
+.add-payroll,
+.edit-payroll {
+  background-color: var(--light-grey);
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.add-payroll h2,
+.edit-payroll h2 {
+  color: var(--dark-grey);
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.form-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.form-container input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: var(--white);
+}
+
+.form-container button {
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: var(--black);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  grid-column: 1 / -1;
+}
+
+.form-container button:hover {
+  background-color: #ffb300;
+}
+
+/* ===== Table Styles ===== */
+.recent-transactions {
+  margin-bottom: 30px;
+}
+
+.recent-transactions h2 {
+  color: var(--dark-grey);
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--white);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--light-grey);
+}
+
+th {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  font-weight: 500;
+}
+
+tr:hover {
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+/* Status Badges */
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.status.paid {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: var(--success);
+}
+
+.status.pending {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: var(--warning);
+}
+
+.status.overdue {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: var(--danger);
+}
+
+/* Action Buttons */
+.payment-button {
+  padding: 8px 15px;
+  background-color: var(--success);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.3s;
+}
+
+.payment-button:hover:not(:disabled) {
+  background-color: #3d8b40;
+}
+
+.payment-button:disabled {
+  background-color: var(--light-grey);
+  cursor: not-allowed;
+}
+
+td button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.3s;
+}
+
+td button:nth-of-type(2) {
+  background-color: var(--warning);
+  color: var(--white);
+}
+
+td button:nth-of-type(2):hover {
+  background-color: #e68a00;
+}
+
+td button:nth-of-type(3) {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+td button:nth-of-type(3):hover {
+  background-color: #d32f2f;
+}
+
+/* Navigation Button */
+.hr-dashboard-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background-color: var(--secondary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}
+
+.hr-dashboard-button:hover {
+  background-color: var(--dark-grey);
+}
+
+.hr-dashboard-button i {
+  margin-right: 10px;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .filter-container {
+    flex-direction: column;
+  }
+
+  .form-container {
+    grid-template-columns: 1fr;
+  }
+
+  .buttons-container {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}

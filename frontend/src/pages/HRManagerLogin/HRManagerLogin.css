@@ -1,0 +1,125 @@
+/* ===== Base Styles ===== */
+:root {
+  --primary-yellow: #FFC107;       /* Vibrant yellow */
+  --dark-yellow: #FFA000;          /* Darker yellow for hover states */
+  --light-gray: #F5F5F5;           /* Light gray for backgrounds */
+  --medium-gray: #757575;          /* Medium gray for text */
+  --dark-gray: #424242;            /* Dark gray for headings */
+  --white: #FFFFFF;
+  --error-red: #F44336;
+  --input-border: #E0E0E0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--light-gray);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* ===== Login Container ===== */
+.login-container {
+  background-color: var(--white);
+  width: 100%;
+  max-width: 450px;
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-container h1 {
+  color: var(--dark-gray);
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+/* ===== Form Styles ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  color: var(--medium-gray);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-yellow);
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
+}
+
+/* ===== Error Styles ===== */
+.error-input {
+  border-color: var(--error-red) !important;
+}
+
+.error {
+  color: var(--error-red);
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+/* ===== Button Styles ===== */
+button {
+  background-color: var(--primary-yellow);
+  color: var(--dark-gray);
+  border: none;
+  padding: 0.9rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background-color: var(--dark-yellow);
+}
+
+button:disabled {
+  background-color: #FFECB3;
+  cursor: not-allowed;
+  color: #9E9E9E;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .login-container h1 {
+    font-size: 1.5rem;
+  }
+}
