@@ -1,0 +1,127 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background: url('https://source.unsplash.com/1600x900/?fitness') center/cover;
+  color: white;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.cta-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: #ff5733;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Features Section */
+.features {
+  text-align: center;
+  padding: 50px;
+}
+
+.feature-list {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  width: 250px;
+  padding: 20px;
+  background: #f4f4f4;
+  border-radius: 8px;
+}
+
+/* Testimonials */
+.testimonials {
+  text-align: center;
+  padding: 50px;
+  background: #e2e2e2;
+}
+
+.testimonial {
+  margin-top: 20px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  background: #333;
+  color: white;
+  padding: 15px;
+  margin-top: 30px;
+  position: relative;
+  width: 100%;
+}
+
+/* -------------------------- */
+/* Register/Login Form Styles */
+/* -------------------------- */
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive tweaks */
+@media screen and (max-width: 600px) {
+  .feature-list {
+    flex-direction: column;
+    align-items: center;
+  }
+}
