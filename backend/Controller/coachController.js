@@ -1,6 +1,7 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import Coach from '../Model/Coach.js';
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Coach = require('../Model/Coach');
+const { default: mongoose } = require('mongoose');
 
 const coachController = {
   // Coach Signup
@@ -53,7 +54,7 @@ const coachController = {
   // Fetch Coach Profile
   getCoachProfile: async (req, res) => {
     try {
-      const coach = await Coach.findById(req.coach.id).select('-password');
+      const coach = await Coach.findById(req.body._id).select('-password');
       if (!coach) {
         return res.status(404).json({ message: "Coach not found" });
       }
@@ -67,8 +68,15 @@ const coachController = {
   // Update Coach Profile
   updateCoachProfile: async (req, res) => {
     try {
+      if(!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: "Invalid coach ID" });
+      }
       const updates = req.body;
-      const coach = await Coach.findByIdAndUpdate(req.coach.id, updates, { new: true });
+      const coach = await Coach.findByIdAndUpdate(
+        req.params.id, // Using _id instead of id
+        updates, 
+        { new: true }
+      );
 
       if (!coach) {
         return res.status(404).json({ message: "Coach not found" });
@@ -84,7 +92,8 @@ const coachController = {
   // Delete Coach Profile
   deleteCoachProfile: async (req, res) => {
     try {
-      const coach = await Coach.findByIdAndDelete(req.coach.id);
+      const coach = await Coach.findByIdAndDelete(req.params.id);
+      
       if (!coach) {
         return res.status(404).json({ message: "Coach not found" });
       }
@@ -93,68 +102,17 @@ const coachController = {
       console.error("Delete Profile Error:", error);
       res.status(500).json({ message: "Server error" });
     }
-  },
+  }, 
 
-  exampleFunction: (req, res) => {
-    res.send('This is an example function from coachController.');
+  getAllCoaches: async (req, res) => {
+    try {
+      const coaches = await Coach.find().select('-password');
+      res.json(coaches);
+    } catch (error) {
+      console.error("Get All Coaches Error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
   }
 };
 
-export const signup = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const existingCoach = await Coach.findOne({ email });
-    if (existingCoach) {
-      return res.status(400).json({ msg: 'Coach already exists' });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newCoach = new Coach({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    await newCoach.save();
-    res.status(201).json({ msg: 'Coach registered successfully' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ msg: 'Server error' });
-  }
-};
-
-export const signin = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const coach = await Coach.findOne({ email });
-    if (!coach) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
-    }
-
-    const isMatch = await bcrypt.compare(password, coach.password);
-    if (!isMatch) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
-    }
-
-    res.status(200).json({ msg: 'Signin successful', coach });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ msg: 'Server error' });
-  }
-};
-
-export const getCoachProfile = (req, res) => {
-  // Example implementation for getting coach profile
-  res.json({ msg: 'Coach profile retrieved successfully', user: req.user });
-};
-
-export const updateCoachProfile = (req, res) => {
-  // Example implementation for updating coach profile
-  res.json({ msg: 'Coach profile updated successfully' });
-};
-
-export default coachController;
+module.exports = coachController;

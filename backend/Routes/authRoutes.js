@@ -1,8 +1,7 @@
-import express from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import Coach from '../Model/Coach.js'; // Ensure this uses ES module import
-
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const Coach = require('../Model/Coach');
 const router = express.Router();
 
 // Register Coach
@@ -73,4 +72,4 @@ router.post('/signin', async (req, res) => {
   }
 });
 
-export default router; // Ensure this is an ES module export
+module.exports = router;

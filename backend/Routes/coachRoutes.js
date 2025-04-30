@@ -1,16 +1,22 @@
-import express from 'express';
-import { signup, signin, getCoachProfile, updateCoachProfile } from '../Controller/coachController.js';
-import auth from '../middleware/auth.js'; // Ensure the path and extension are correct
+const express = require('express');
+const coachController = require('../Controller/coachController'); 
+const authMiddleware = require('../middleware/auth');
+
 
 const router = express.Router();
 
 // Public Routes
-router.post('/signup', signup);
-router.post('/signin', signin);
+router.post('/signup', coachController.signup);
+router.post('/signin', coachController.signin);
 
 // Protected Routes (Require Authentication)
 
-router.get('/profile', auth, getCoachProfile);
-router.put('/profile', auth, updateCoachProfile);
+router.get('/dashboard', authMiddleware, coachController.getCoachProfile);
+router.put('/dashboard/update', authMiddleware, coachController.updateCoachProfile);
 
-export default router;
+router.get('/', coachController.getAllCoaches);
+router.get('/:id', coachController.getCoachProfile);
+router.put('/:id', coachController.updateCoachProfile);
+router.delete('/:id', coachController.deleteCoachProfile);
+
+module.exports = router;

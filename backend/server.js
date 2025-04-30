@@ -1,9 +1,9 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import coachRoutes from './Routes/coachRoutes.js'; // Ensure the .js extension is included
-import authRoutes from './Routes/authRoutes.js'; // Use ES module import
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const coachRoutes = require('./Routes/coachRoutes');
+const authRoutes = require('./Routes/authRoutes'); // Ensure this file exists
 
 // Load environment variables
 dotenv.config();

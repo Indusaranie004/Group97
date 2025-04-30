@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './SignInForm.css'; // Import the CSS file
 
-const SignInForm = () => {
+const SignInForm = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,9 +20,12 @@ const SignInForm = () => {
       });
 
       const { token } = response.data;
+      const { name } = response.data.coach; // Extract name from response
 
       if (token) {
         localStorage.setItem('coachToken', token); // Store token
+        localStorage.setItem('coachName', name); // Store email
+        if (props.onLogin) props.onLogin();
         alert('Sign-in successful!');
         navigate('/dashboard'); // Redirect to dashboard
       } else {
@@ -30,7 +33,6 @@ const SignInForm = () => {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to sign in. Please check your credentials.');
-      console.error('Sign-in error:', err);
     }
   };
 

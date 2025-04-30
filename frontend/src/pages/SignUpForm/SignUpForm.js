@@ -69,7 +69,6 @@ const SignUp = () => {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (data.token) {
         // Show success pop-up alert
@@ -77,12 +76,13 @@ const SignUp = () => {
         
         // Optionally, reset the form fields after successful registration
         setFormData({ name: '', email: '', password: '' });
+        window.location.href = '/signin';
 
       } else {
         alert(data.msg || 'Registration failed');
       }
     } catch (error) {
-      console.error('Error registering coach:', error);
+      alert('Email address already exists.');
     }
   };
 
