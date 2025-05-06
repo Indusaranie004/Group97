@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const coachRoutes = require('./Routes/coachRoutes');
-const authRoutes = require('./Routes/authRoutes'); // Ensure this file exists
+const userRoutes = require('./Routes/userRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -24,7 +24,8 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Routes
 app.use('/api/coach', coachRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', userRoutes); 
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {

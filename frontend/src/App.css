@@ -133,6 +133,39 @@ p a:hover {
   text-decoration: underline;
 }
 
+.logout-btn {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Arial', sans-serif; /* Match your body font */
+  display: inline-block; /* Match link behavior */
+  margin: 0; /* Remove default button margins */
+  line-height: normal; /* Reset line height */
+}
+
+.logout-btn:hover {
+  background-color: #0056b3;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+/* Optional: If you need to adjust the navbar list items */
+.navbar ul {
+  display: flex;
+  align-items: center; /* Vertically center all items */
+}
+
+.navbar li {
+  margin: 0; /* Remove default list margins */
+  padding: 0; /* Remove default list padding */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .App {

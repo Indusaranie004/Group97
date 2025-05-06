@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './SignUpForm.css'; // Import the CSS file
+import './SignUpForm.css';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,6 @@ const SignUp = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Prevent numbers and special characters in the name field
     if (name === 'name' && !/^[A-Za-z\s]*$/.test(value)) {
       return;
     }
@@ -45,14 +44,12 @@ const SignUp = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: errorMsg }));
   };
 
-  // Function to check if the form is valid
   const isFormValid = () => {
     return !errors.name && !errors.email && !errors.password && name && email && password;
   };
 
-  // Function to register coach
   const registerCoach = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault(); 
 
     if (!isFormValid()) {
       alert('Please fix validation errors before submitting');
@@ -88,7 +85,7 @@ const SignUp = () => {
 
   return (
     <div className="signup-form">
-      <h2>Coach Sign-Up</h2>
+      <h2>Sign-Up</h2>
       <form onSubmit={registerCoach}>
         <input
           type="text"

@@ -1,44 +1,47 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './SignInForm.css'; // Import the CSS file
+import './SignInForm.css';
 
 const SignInForm = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Redirect hook
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
+    setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/coach/signin', {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
         password,
       });
 
-      const { token } = response.data;
-      const { name } = response.data.coach; // Extract name from response
-
+      const token = response.data.token;
+      const name = response.data.data.user.name;
+      console.log(token);
+      
       if (token) {
-        localStorage.setItem('coachToken', token); // Store token
-        localStorage.setItem('coachName', name); // Store email
+        localStorage.setItem('userToken', token); 
+        localStorage.setItem('UserName', name);
+        console.log("userToken: " + localStorage.getItem('userToken'));
         if (props.onLogin) props.onLogin();
         alert('Sign-in successful!');
-        navigate('/dashboard'); // Redirect to dashboard
+        navigate('/dashboard'); 
       } else {
         setError('Invalid credentials. Please try again.');
       }
     } catch (err) {
+      console.error(err);
       setError(err.response?.data?.message || 'Failed to sign in. Please check your credentials.');
     }
   };
 
   return (
     <div className="signin-form">
-      <h2>Coach Sign In</h2>
+      <h2>Sign In</h2>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>

@@ -1,9 +1,7 @@
 /* Dashboard Container */
 .dashboard-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
   min-height: 100vh;
+  background-color: #f5f5f5;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -12,37 +10,51 @@ h3{
 }
 /* Full-width Header */
 .dashboard-header {
-  background-color: #4CAF50;
-  margin-top: 100px;
+  background-color: #2c3e50;
   color: white;
-  padding: 2rem 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 2rem;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
-.dashboard-header h2 {
-  font-size: 2rem;
+.header-content h2 {
   margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
 }
 
-.dashboard-header p {
-  font-size: 1rem;
-  margin-top: 0.5rem;
+.header-content p {
+  margin: 0.5rem 0;
   opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.logout-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
 }
 
 /* Dashboard Content */
 .dashboard-content {
-  margin: 0 auto;
-  padding: 20px;
-  width: calc(100vw - 120px);
-  flex: 1;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 /* Stats Row */
@@ -104,21 +116,25 @@ h3{
   gap: 15px;
 }
 
-.search-filter-container {
+.search-filter-section {
   display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  gap: 10px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.search-input, .filter-input {
-  padding: px 15px;
+.search-input {
+  flex: 1;
+  padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 0.9rem;
-  min-width: 400px;
+  font-size: 1rem;
 }
-.filter-input {
+
+.filter-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
   min-width: 200px;
 }
 
@@ -148,72 +164,72 @@ h3{
 
 .coaches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .coach-card {
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
-  padding: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .coach-card:hover {
   transform: translateY(-5px);
-}
-
-.coach-image-wrapper {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-bottom: 15px;
-  border: 3px solid #4CAF50;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .coach-image {
   width: 100%;
-  height: 100%;
+  height: 200px;
   object-fit: cover;
-  transition: transform 0.3s ease;
 }
 
-.coach-card:hover .coach-image {
-  transform: scale(1.05);
+.coach-info {
+  padding: 1.5rem;
 }
 
-.coach-details {
-  width: 100%;
-  padding: 0 10px;
-}
-.coach-details p{
-  text-align: left;
-}
-.coach-details h4 {
-  margin: 0 0 10px 0;
-  font-size: 1.2rem;
-  color: #333;
+.coach-info h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.25rem;
 }
 
-.coach-details p {
-  margin: 0 0 8px 0;
-  font-size: 0.9rem;
-  color: #555;
+.coach-info p {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.95rem;
 }
 
-.coach-card-actions {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: 15px 0 0;
-  gap: 10px;
+.choose-btn,
+.remove-btn {
+  width: 150px;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.choose-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.choose-btn:hover {
+  background-color: #27ae60;
+}
+
+.remove-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.remove-btn:hover {
+  background-color: #c0392b;
 }
 
 /* Upcoming Classes Card */
@@ -435,11 +451,176 @@ h3{
     align-items: flex-start;
   }
   
-  .search-filter-container {
+  .search-filter-section {
+    flex-direction: column;
+  }
+  
+  .search-input, .filter-select {
     width: 100%;
   }
   
-  .search-input, .filter-input {
+  .search-input {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+  
+  .header-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .header-content p {
+    font-size: 1rem;
+  }
+}
+
+.search-section {
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.coaches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.coach-line-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.coach-line-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.coach-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.coach-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.coach-icon img {
     width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-icon {
+  font-size: 1rem;
+}
+
+.coach-name {
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 150px;
+}
+
+.coach-experience {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.action-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: 70px;
+  white-space: nowrap;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #e74c3c;
+  font-size: 1.2rem;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .coach-line-card {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .coach-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .coach-name {
+    min-width: 120px;
+    font-size: 0.9rem;
+  }
+  
+  .coach-experience {
+    font-size: 0.8rem;
+  }
+  
+  .action-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    min-width: 60px;
+  }
+  
+  .search-input {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+  
+  .header-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .header-content p {
+    font-size: 1rem;
   }
 }
