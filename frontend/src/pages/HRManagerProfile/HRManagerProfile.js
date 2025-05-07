@@ -131,146 +131,175 @@ function HRManagerProfile() {
     };
 
     return (
-        <div className="profile-container">
-            <h1>HR Manager Profile</h1>
-            
-            <div className="navigation-buttons">
-                <button onClick={() => navigate('/hr-dashboard')} className="nav-btn">HR Dashboard</button>
-                <button onClick={() => navigate('/payroll-dashboard')} className="nav-btn">Payroll Dashboard</button>
+        <div className="app-container">
+            <header className="main-header">
+                <div className="logo">
+                    <h2>HR System</h2>
+                </div>
+                <nav className="main-nav">
+                    <ul>
+                        <li><button onClick={() => navigate('/hr-dashboard')} className="nav-btn">HR Dashboard</button></li>
+                        <li><button onClick={() => navigate('/payroll-dashboard')} className="nav-btn">Payroll</button></li>
+                        <li className="profile-menu">
+                            <span className="user-name">{user.fullname}</span>
+                            <div className="dropdown-content">
+                                <button onClick={() => navigate('/profile')}>My Profile</button>
+                            </div>
+                        </li>
+                        <li>
+                            <button 
+                                onClick={() => {
+                                    localStorage.removeItem('user');
+                                    navigate('/login');
+                                }} 
+                                className="logout-btn"
+                            >
+                                Logout
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </header>
+
+            <div className="profile-container">
+                <h1>HR Manager Profile</h1>
+                
+                {message && (
+                    <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+                        {message}
+                    </div>
+                )}
+
+                {!editMode ? (
+                    <div className="profile-view">
+                        <div className="profile-header">
+                            <div className="profile-avatar">
+                                {user.fullname ? user.fullname.charAt(0).toUpperCase() : ''}
+                            </div>
+                            <div className="profile-title">
+                                <h2>{user.fullname}</h2>
+                                <p className="role-badge">{user.role}</p>
+                            </div>
+                        </div>
+
+                        <div className="profile-details">
+                            <div className="profile-field">
+                                <label>Email:</label>
+                                <p>{user.email}</p>
+                            </div>
+                            <div className="profile-field">
+                                <label>Username:</label>
+                                <p>{user.username}</p>
+                            </div>
+                            <div className="profile-field">
+                                <label>Phone:</label>
+                                <p>{user.phone}</p>
+                            </div>
+                            <div className="profile-field">
+                                <label>Join Date:</label>
+                                <p>{user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'N/A'}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="profile-actions">
+                            <button onClick={() => setEditMode(true)} className="edit-btn">Edit Profile</button>
+                            <button onClick={handleDelete} className="delete-btn">Delete Account</button>
+                        </div>
+                    </div>
+                ) : (
+                    <form onSubmit={handleUpdate} className="profile-form">
+                        <div className="form-group">
+                            <label>Full Name</label>
+                            <input 
+                                type="text" 
+                                name="fullname"
+                                value={user.fullname} 
+                                onChange={handleInputChange}
+                                className={errors.fullname ? 'error-input' : ''}
+                            />
+                            {errors.fullname && <span className="error">{errors.fullname}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input 
+                                type="email" 
+                                name="email"
+                                value={user.email} 
+                                onChange={handleInputChange}
+                                className={errors.email ? 'error-input' : ''}
+                            />
+                            {errors.email && <span className="error">{errors.email}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Username</label>
+                            <input 
+                                type="text" 
+                                name="username"
+                                value={user.username} 
+                                onChange={handleInputChange}
+                                className={errors.username ? 'error-input' : ''}
+                            />
+                            {errors.username && <span className="error">{errors.username}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Phone Number</label>
+                            <input 
+                                type="tel" 
+                                name="phone"
+                                value={user.phone} 
+                                onChange={handleInputChange}
+                                className={errors.phone ? 'error-input' : ''}
+                            />
+                            {errors.phone && <span className="error">{errors.phone}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Role</label>
+                            <select 
+                                name="role"
+                                value={user.role} 
+                                onChange={handleInputChange}
+                                className={errors.role ? 'error-input' : ''}
+                            >
+                                <option value="HR Manager">HR Manager</option>
+                                <option value="Staff">Staff</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            {errors.role && <span className="error">{errors.role}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label>New Password (leave blank to keep current)</label>
+                            <input 
+                                type="password" 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)}
+                                className={errors.password ? 'error-input' : ''}
+                            />
+                            {errors.password && <span className="error">{errors.password}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Confirm New Password</label>
+                            <input 
+                                type="password" 
+                                value={confirmPassword} 
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className={errors.confirmPassword ? 'error-input' : ''}
+                            />
+                            {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" className="save-btn">Save Changes</button>
+                            <button type="button" onClick={() => setEditMode(false)} className="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                )}
             </div>
-            
-            {message && (
-                <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
-                    {message}
-                </div>
-            )}
-
-            {!editMode ? (
-                <div className="profile-view">
-                    <div className="profile-field">
-                        <label>Full Name:</label>
-                        <p>{user.fullname}</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Email:</label>
-                        <p>{user.email}</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Username:</label>
-                        <p>{user.username}</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Phone:</label>
-                        <p>{user.phone}</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Role:</label>
-                        <p>{user.role}</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Join Date:</label>
-                        <p>{new Date(user.joinDate).toLocaleDateString()}</p>
-                    </div>
-                    
-                    <div className="profile-actions">
-                        <button onClick={() => setEditMode(true)} className="edit-btn">Edit Profile</button>
-                        <button onClick={handleDelete} className="delete-btn">Delete Account</button>
-                        <button onClick={() => navigate(-1)} className="back-btn">Go Back</button>
-                    </div>
-                </div>
-            ) : (
-                <form onSubmit={handleUpdate} className="profile-form">
-                    <div className="form-group">
-                        <label>Full Name</label>
-                        <input 
-                            type="text" 
-                            name="fullname"
-                            value={user.fullname} 
-                            onChange={handleInputChange}
-                            className={errors.fullname ? 'error-input' : ''}
-                        />
-                        {errors.fullname && <span className="error">{errors.fullname}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Email</label>
-                        <input 
-                            type="email" 
-                            name="email"
-                            value={user.email} 
-                            onChange={handleInputChange}
-                            className={errors.email ? 'error-input' : ''}
-                        />
-                        {errors.email && <span className="error">{errors.email}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Username</label>
-                        <input 
-                            type="text" 
-                            name="username"
-                            value={user.username} 
-                            onChange={handleInputChange}
-                            className={errors.username ? 'error-input' : ''}
-                        />
-                        {errors.username && <span className="error">{errors.username}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Phone Number</label>
-                        <input 
-                            type="tel" 
-                            name="phone"
-                            value={user.phone} 
-                            onChange={handleInputChange}
-                            className={errors.phone ? 'error-input' : ''}
-                        />
-                        {errors.phone && <span className="error">{errors.phone}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Role</label>
-                        <select 
-                            name="role"
-                            value={user.role} 
-                            onChange={handleInputChange}
-                            className={errors.role ? 'error-input' : ''}
-                        >
-                            <option value="HR Manager">HR Manager</option>
-                            <option value="Staff">Staff</option>
-                            <option value="Admin">Admin</option>
-                        </select>
-                        {errors.role && <span className="error">{errors.role}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>New Password (leave blank to keep current)</label>
-                        <input 
-                            type="password" 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={errors.password ? 'error-input' : ''}
-                        />
-                        {errors.password && <span className="error">{errors.password}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Confirm New Password</label>
-                        <input 
-                            type="password" 
-                            value={confirmPassword} 
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className={errors.confirmPassword ? 'error-input' : ''}
-                        />
-                        {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
-                    </div>
-
-                    <div className="form-actions">
-                        <button type="submit" className="save-btn">Save Changes</button>
-                        <button type="button" onClick={() => setEditMode(false)} className="cancel-btn">Cancel</button>
-                    </div>
-                </form>
-            )}
         </div>
     );
 }

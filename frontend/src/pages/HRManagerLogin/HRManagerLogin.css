@@ -1,125 +1,106 @@
-/* ===== Base Styles ===== */
-:root {
-  --primary-yellow: #FFC107;       /* Vibrant yellow */
-  --dark-yellow: #FFA000;          /* Darker yellow for hover states */
-  --light-gray: #F5F5F5;           /* Light gray for backgrounds */
-  --medium-gray: #757575;          /* Medium gray for text */
-  --dark-gray: #424242;            /* Dark gray for headings */
-  --white: #FFFFFF;
-  --error-red: #F44336;
-  --input-border: #E0E0E0;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-  background-color: var(--light-gray);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-/* ===== Login Container ===== */
+/* HRManagerLogin.css */
 .login-container {
-  background-color: var(--white);
-  width: 100%;
-  max-width: 450px;
-  padding: 2.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #ecf0f1; /* Light color */
+  padding: 20px;
 }
 
 .login-container h1 {
-  color: var(--dark-gray);
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
-  font-weight: 600;
+  color: #2c3e50; /* Primary color */
+  margin-bottom: 30px;
+  font-size: 2rem;
+  text-align: center;
 }
 
-/* ===== Form Styles ===== */
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(44, 62, 80, 0.1); /* Primary color with opacity */
+  width: 100%;
+  max-width: 400px;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: left;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-  color: var(--medium-gray);
+  display: block;
+  margin-bottom: 8px;
+  color: #2c3e50; /* Primary color */
   font-weight: 500;
-  font-size: 0.95rem;
 }
 
 .form-group input {
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--input-border);
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus {
+  border-color: #3498db; /* Secondary color */
   outline: none;
-  border-color: var(--primary-yellow);
-  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); /* Secondary color with opacity */
 }
 
-/* ===== Error Styles ===== */
 .error-input {
-  border-color: var(--error-red) !important;
+  border-color: #e74c3c !important; /* Warning color */
 }
 
 .error {
-  color: var(--error-red);
+  color: #e74c3c; /* Warning color */
   font-size: 0.85rem;
-  margin-top: 0.2rem;
+  margin-top: 5px;
+  display: block;
 }
 
-/* ===== Button Styles ===== */
 button {
-  background-color: var(--primary-yellow);
-  color: var(--dark-gray);
+  width: 100%;
+  padding: 12px;
+  background-color: #3498db; /* Secondary color */
+  color: white;
   border: none;
-  padding: 0.9rem;
   border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 0.5rem;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
 button:hover {
-  background-color: var(--dark-yellow);
+  background-color: #2980b9; /* Darker shade of secondary color */
 }
 
 button:disabled {
-  background-color: #FFECB3;
+  background-color: #95a5a6;
   cursor: not-allowed;
-  color: #9E9E9E;
 }
 
-/* ===== Responsive Adjustments ===== */
+/* Responsive adjustments */
 @media (max-width: 480px) {
-  .login-container {
-    padding: 2rem 1.5rem;
-    margin: 0 1rem;
-  }
-  
   .login-container h1 {
     font-size: 1.5rem;
+  }
+  
+  form {
+    padding: 20px;
+  }
+  
+  .form-group input {
+    padding: 10px 12px;
+  }
+  
+  button {
+    padding: 10px;
+  font-size: 15px;
   }
 }

@@ -1,0 +1,355 @@
+/* TrainingDashboard.css - Scoped styles for the fitness management dashboard */
+
+/* Main container styles */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ecf0f1;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 1rem 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.sidebar-header {
+  padding: 0 1.5rem 1rem;
+  border-bottom: 1px solid #34495e;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1abc9c;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.sidebar-menu li {
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-menu li:hover {
+  background-color: #34495e;
+}
+
+.sidebar-menu li.active {
+  background-color: #1abc9c;
+  color: #fff;
+}
+
+.sidebar-menu li i {
+  width: 20px;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  margin-left: 250px; /* Same as sidebar width */
+  padding: 1rem;
+  background-color: #ecf0f1;
+}
+
+/* Card styles */
+.card {
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+/* Table styles */
+.table {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  border: none;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.table tbody td {
+  padding: 0.4rem 0.5rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Badge styles */
+.badge {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.bg-success {
+  background-color: #2d5b4a !important; /* Medium dark green */
+}
+
+.bg-danger {
+  background-color: #e74c3c !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+.bg-info {
+  background-color: #3498db !important; /* Dark blue */
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* Button styles */
+.btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #1a3e2f; /* Dark green */
+  border-color: #1a3e2f;
+}
+
+.btn-primary:hover {
+  background-color: #23483a; /* Slightly lighter dark green */
+  border-color: #23483a;
+}
+
+.btn-success {
+  background-color: #1abc9c;
+  border-color: #1abc9c;
+}
+
+.btn-success:hover {
+  background-color: #16a085;
+  border-color: #16a085;
+}
+
+.btn-info {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-info:hover {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+/* Form control styles */
+.form-control, .form-select {
+  border: 1px solid #bdc3c7;
+  border-radius: 3px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Chart container styles */
+.chart-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chart-title {
+  color: #1a5f55;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Report section */
+.report-section {
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-section h5 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.list-group-item {
+  border: 1px solid #ecf0f1;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 180px;
+  }
+  
+  .main-content {
+    margin-left: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 0.5rem;
+  }
+  
+  .table-responsive {
+    margin: 0 -0.5rem;
+  }
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #1a3e2f;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #4a90e2; /* Dark blue */
+  border-radius: 3px;
+}
+
+/* Dashboard Header Styles */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #1a5f55;
+}
+
+.dashboard-title {
+  color: #1a5f55;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+/* Back Button Styles */
+.back-button {
+  background-color: #1a5f55;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #134b43;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button i {
+  font-size: 16px;
+}

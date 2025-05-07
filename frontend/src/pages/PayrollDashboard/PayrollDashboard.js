@@ -19,13 +19,36 @@ const PayrollDashboard = () => {
   });
   const [editPayroll, setEditPayroll] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    paymentStatus: 'all',
-    minSalary: '',
-    maxSalary: '',
-    dateFrom: '',
-    dateTo: ''
-  });
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState('transactions');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Fetch all payrolls
+  const fetchPayrolls = async () => {
+    try {
+      const response = await fetch(URL);
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      // Check the structure of the response
+      console.log('API Response:', data);
+      
+      // Handle different response structures
+      const payrollData = data.payrolls || data || [];
+      setPayrolls(payrollData);
+      setFilteredPayrolls(payrollData); // Initialize filtered payrolls
+    } catch (error) {
+      console.error('Error fetching payrolls:', error);
+      alert(`Failed to fetch payrolls: ${error.message}`);
+    }
+  };
+
+  useEffect(() => {
+    fetchPayrolls();
+  }, []);
 
   // Memoized filter function
   const applyFilters = useCallback(() => {
@@ -40,82 +63,26 @@ const PayrollDashboard = () => {
     }
 
     // Apply payment status filter
-    if (filters.paymentStatus !== 'all') {
-      result = result.filter(payroll =>
-        payroll.paymentStatus === filters.paymentStatus
-      );
-    }
-
-    // Apply salary range filter
-    if (filters.minSalary) {
+    if (statusFilter !== 'all') {
       result = result.filter(payroll => {
-        const salary = parseFloat(payroll.salary.replace(/[^0-9.-]+/g, ""));
-        return salary >= parseFloat(filters.minSalary);
+        // Make case-insensitive comparison to ensure filter works
+        return payroll.paymentStatus && 
+               payroll.paymentStatus.toLowerCase() === statusFilter.toLowerCase();
       });
-    }
-
-    if (filters.maxSalary) {
-      result = result.filter(payroll => {
-        const salary = parseFloat(payroll.salary.replace(/[^0-9.-]+/g, ""));
-        return salary <= parseFloat(filters.maxSalary);
-      });
-    }
-
-    // Apply date range filter
-    if (filters.dateFrom) {
-      result = result.filter(payroll =>
-        new Date(payroll.date) >= new Date(filters.dateFrom)
-      );
-    }
-
-    if (filters.dateTo) {
-      result = result.filter(payroll =>
-        new Date(payroll.date) <= new Date(filters.dateTo)
-      );
     }
 
     setFilteredPayrolls(result);
-  }, [payrolls, searchTerm, filters]);
-
-  // Fetch all payrolls
-  useEffect(() => {
-    const fetchPayrolls = async () => {
-      try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        setPayrolls(data.payrolls);
-      } catch (error) {
-        console.error('Error fetching payrolls:', error);
-      }
-    };
-
-    fetchPayrolls();
-  }, []);
+  }, [payrolls, searchTerm, statusFilter]);
 
   // Apply filters when dependencies change
   useEffect(() => {
     applyFilters();
-  }, [applyFilters]);
-
-  // Handle filter changes
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  }, [applyFilters, searchTerm, statusFilter, payrolls]);
 
   // Reset all filters
   const resetFilters = () => {
     setSearchTerm('');
-    setFilters({
-      paymentStatus: 'all',
-      minSalary: '',
-      maxSalary: '',
-      dateFrom: '',
-      dateTo: ''
-    });
+    setStatusFilter('all');
   };
 
   // Handle input change for new payroll
@@ -124,18 +91,49 @@ const PayrollDashboard = () => {
     setNewPayroll({ ...newPayroll, [name]: value });
   };
 
+  // Validate form data
+  const validatePayrollForm = (payrollData) => {
+    // Check if required fields are filled
+    if (!payrollData.employee || !payrollData.salary || !payrollData.date || !payrollData.paymentStatus) {
+      alert('Please fill all required fields');
+      return false;
+    }
+    return true;
+  };
+
   // Add new payroll
   const addPayroll = async () => {
+    if (!validatePayrollForm(newPayroll)) return;
+    
     try {
+      setIsSubmitting(true);
+      
+      // Format data for better compatibility with backend
+      const payrollData = {
+        ...newPayroll,
+        // Ensure numeric values are properly formatted if needed
+        salary: newPayroll.salary.toString(),
+        bonus: newPayroll.bonus ? newPayroll.bonus.toString() : ''
+      };
+      
       const response = await fetch(URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newPayroll),
+        body: JSON.stringify(payrollData),
       });
-      const data = await response.json();
-      setPayrolls([...payrolls, data.payrolls]);
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      await response.json();
+      
+      // Refresh payroll data after successful addition
+      await fetchPayrolls();
+      
+      // Reset form
       setNewPayroll({
         employee: '',
         bonus: '',
@@ -143,124 +141,231 @@ const PayrollDashboard = () => {
         date: '',
         paymentStatus: ''
       });
+      
+      alert('Payroll added successfully!');
+      // Switch to transactions tab after adding
+      setActiveTab('transactions');
     } catch (error) {
       console.error('Error adding payroll:', error);
+      alert(`Failed to add payroll: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // Set payroll to edit
   const setPayrollToEdit = (payroll) => {
     setEditPayroll(payroll);
+    setActiveTab('edit');
   };
 
   // Update payroll
   const updatePayroll = async () => {
+    if (!validatePayrollForm(editPayroll)) return;
+    
     try {
-      const response = await fetch(`${URL}/${editPayroll._id}`, {
+      setIsSubmitting(true);
+      
+      const payrollId = editPayroll._id || editPayroll.id;
+      if (!payrollId) {
+        throw new Error("Payroll ID is missing");
+      }
+      
+      const response = await fetch(`${URL}/${payrollId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(editPayroll),
       });
-      const data = await response.json();
-      setPayrolls(payrolls.map(p => (p._id === editPayroll._id ? data.payrolls : p)));
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      // Refresh payroll data after successful update
+      await fetchPayrolls();
+      
+      // Clear edit mode
       setEditPayroll(null);
+      alert('Payroll updated successfully!');
+      // Switch to transactions tab after updating
+      setActiveTab('transactions');
     } catch (error) {
       console.error('Error updating payroll:', error);
+      alert(`Failed to update payroll: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // Delete payroll
   const deletePayroll = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this payroll?')) return;
+    
     try {
-      await fetch(`${URL}/${id}`, {
+      const response = await fetch(`${URL}/${id}`, {
         method: 'DELETE',
       });
-      setPayrolls(payrolls.filter(p => p._id !== id));
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      // Refresh payroll data after successful deletion
+      await fetchPayrolls();
+      
+      alert('Payroll deleted successfully!');
     } catch (error) {
       console.error('Error deleting payroll:', error);
+      alert(`Failed to delete payroll: ${error.message}`);
     }
   };
 
-  // Function to handle payment action
-  const handlePayment = (employee) => {
-    alert(`Payment processed for ${employee}`);
+  // Function to handle payment action - FIXED
+  const handlePayment = async (id, employee) => {
+    try {
+      const payrollToUpdate = payrolls.find(p => p._id === id || p.id === id);
+      
+      if (!payrollToUpdate) {
+        throw new Error("Payroll not found");
+      }
+      
+      const payrollId = id;
+      
+      // Check if server expects PATCH or PUT for status updates
+      // First try with PATCH
+      let response = await fetch(`${URL}/${payrollId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ paymentStatus: "Paid" }),
+      });
+      
+      // If PATCH returns 404 or method not allowed, try with PUT
+      if (response.status === 404 || response.status === 405) {
+        // For PUT, we need to send the full object
+        const updatedPayroll = {
+          ...payrollToUpdate,
+          paymentStatus: "Paid"
+        };
+        
+        response = await fetch(`${URL}/${payrollId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedPayroll),
+        });
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      // Refresh payroll data after successful payment
+      await fetchPayrolls();
+      
+      alert(`Payment processed for ${employee}`);
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert(`Failed to process payment: ${error.message}`);
+    }
+  };
+
+  // Calculate status counts - FIXED to ensure case-insensitive comparison
+  const pendingCount = payrolls.filter(p => 
+    p.paymentStatus && p.paymentStatus.toLowerCase() === "pending"
+  ).length;
+  
+  const paidCount = payrolls.filter(p => 
+    p.paymentStatus && p.paymentStatus.toLowerCase() === "paid"
+  ).length;
+  
+  const overdueCount = payrolls.filter(p => 
+    p.paymentStatus && p.paymentStatus.toLowerCase() === "overdue"
+  ).length;
+
+  // Function to generate PDF reports with proper headers
+  const generatePdfReport = (title, columns, data) => {
+    try {
+      const doc = new jsPDF();
+      const currentDate = new Date().toLocaleDateString();
+      
+      // Add header with company name and date
+      doc.setFontSize(20);
+      doc.text("FitnessPro", 14, 20);
+      
+      doc.setFontSize(10);
+      doc.text(`Generated: ${currentDate}`, doc.internal.pageSize.width - 60, 20);
+      
+      doc.setFontSize(16);
+      doc.text(title, 14, 30);
+      
+      // Add table with data
+      autoTable(doc, {
+        head: [columns],
+        body: data,
+        startY: 35,
+      });
+      
+      doc.save(`${title.replace(/\s+/g, '_')}.pdf`);
+    } catch (error) {
+      console.error(`Error generating ${title} report:`, error);
+      alert(`Failed to generate ${title} report`);
+    }
   };
 
   // Function to generate and download Employee Salary Report (PDF)
   const generateEmployeeSalaryReport = () => {
-    try {
-      const doc = new jsPDF();
-      doc.text("Employee Salary Report", 10, 10);
-      autoTable(doc, {
-        head: [["Employee Name", "Salary", "Bonus"]],
-        body: filteredPayrolls.map((t) => [t.employee, t.salary, t.bonus]),
-      });
-      doc.save("Employee_Salary_Report.pdf");
-    } catch (error) {
-      console.error('Error generating employee salary report:', error);
-      alert('Failed to generate employee salary report');
-    }
+    generatePdfReport(
+      "Employee Salary Report",
+      ["Employee Name", "Salary", "Bonus"],
+      filteredPayrolls.map((t) => [t.employee, t.salary, t.bonus || "0"])
+    );
   };
 
   // Function to generate and download Payment Status Report (PDF)
   const generatePaymentStatusReport = () => {
-    try {
-      const doc = new jsPDF();
-      doc.text("Payment Status Report", 10, 10);
-      autoTable(doc, {
-        head: [["Employee Name", "Payment Status"]],
-        body: filteredPayrolls.map((t) => [t.employee, t.paymentStatus]),
-      });
-      doc.save("Payment_Status_Report.pdf");
-    } catch (error) {
-      console.error('Error generating payment status report:', error);
-      alert('Failed to generate payment status report');
-    }
-  };
-
-  // Function to generate and download Total Payments Report (PDF)
-  const generateTotalPaymentsReport = () => {
-    try {
-      const totalPaid = filteredPayrolls.filter((t) => t.paymentStatus === "Paid").length;
-      const totalPending = filteredPayrolls.filter((t) => t.paymentStatus === "Pending").length;
-      const totalOverdue = filteredPayrolls.filter((t) => t.paymentStatus === "Overdue").length;
-
-      const doc = new jsPDF();
-      doc.text("Total Payments Report", 10, 10);
-      autoTable(doc, {
-        head: [["Status", "Count"]],
-        body: [
-          ["Paid", totalPaid],
-          ["Pending", totalPending],
-          ["Overdue", totalOverdue],
-        ],
-      });
-      doc.save("Total_Payments_Report.pdf");
-    } catch (error) {
-      console.error('Error generating total payments report:', error);
-      alert('Failed to generate total payments report');
-    }
+    generatePdfReport(
+      "Payment Status Report",
+      ["Employee Name", "Payment Status", "Date"],
+      filteredPayrolls.map((t) => [t.employee, t.paymentStatus, t.date])
+    );
   };
 
   // Function to generate and download Payroll Summary Report (PDF)
   const generatePayrollSummaryReport = () => {
     try {
-      const totalSalaries = filteredPayrolls.reduce((sum, t) => sum + parseFloat(t.salary.replace(/[^0-9.-]+/g, "") || 0), 0);
-      const totalBonuses = filteredPayrolls.reduce((sum, t) => sum + parseFloat(t.bonus.replace(/[^0-9.-]+/g, "") || 0), 0);
+      const totalSalaries = filteredPayrolls.reduce((sum, t) => {
+        const salary = typeof t.salary === 'string' ? 
+          parseFloat(t.salary.replace(/[^0-9.-]+/g, "") || 0) : 
+          (parseFloat(t.salary) || 0);
+        return sum + salary;
+      }, 0);
+      
+      const totalBonuses = filteredPayrolls.reduce((sum, t) => {
+        const bonus = !t.bonus ? 0 : 
+          (typeof t.bonus === 'string' ? 
+            parseFloat(t.bonus.replace(/[^0-9.-]+/g, "") || 0) : 
+            (parseFloat(t.bonus) || 0));
+        return sum + bonus;
+      }, 0);
 
-      const doc = new jsPDF();
-      doc.text("Payroll Summary Report", 10, 10);
-      autoTable(doc, {
-        head: [["Metric", "Amount"]],
-        body: [
+      generatePdfReport(
+        "Payroll Summary Report",
+        ["Metric", "Amount"],
+        [
           ["Total Salaries", `$${totalSalaries.toFixed(2)}`],
           ["Total Bonuses", `$${totalBonuses.toFixed(2)}`],
           ["Total Payroll", `$${(totalSalaries + totalBonuses).toFixed(2)}`],
-        ],
-      });
-      doc.save("Payroll_Summary_Report.pdf");
+          ["Total Employees", `${filteredPayrolls.length}`],
+          ["Paid Transactions", `${filteredPayrolls.filter(p => p.paymentStatus && p.paymentStatus.toLowerCase() === "paid").length}`],
+          ["Pending Transactions", `${filteredPayrolls.filter(p => p.paymentStatus && p.paymentStatus.toLowerCase() === "pending").length}`],
+          ["Overdue Transactions", `${filteredPayrolls.filter(p => p.paymentStatus && p.paymentStatus.toLowerCase() === "overdue").length}`]
+        ]
+      );
     } catch (error) {
       console.error('Error generating payroll summary report:', error);
       alert('Failed to generate payroll summary report');
@@ -268,247 +373,373 @@ const PayrollDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <header className="header">
-        <h1>Payroll Dashboard</h1>
-      </header>
-
-      {/* Search and Filter Section */}
-      <section className="search-filter-section">
-        <h2>Search & Filter</h2>
-        
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search by employee or status..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button className="search-button">
-            <i className="fas fa-search"></i>
+    <div className={`dashboard-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      {/* Sidebar / Navigation */}
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h2>FitnessPro</h2>
+          <button className="toggle-sidebar" onClick={() => setSidebarOpen(!sidebarOpen)}>
+            {sidebarOpen ? '←' : '→'}
           </button>
         </div>
-
-        <div className="filter-container">
-          <div className="filter-group">
-            <label>Payment Status:</label>
-            <select
-              name="paymentStatus"
-              value={filters.paymentStatus}
-              onChange={handleFilterChange}
-            >
-              <option value="all">All Statuses</option>
-              <option value="Paid">Paid</option>
-              <option value="Pending">Pending</option>
-              <option value="Overdue">Overdue</option>
-            </select>
-          </div>
-
-          <div className="filter-group">
-            <label>Salary Range:</label>
-            <input
-              type="number"
-              name="minSalary"
-              placeholder="Min"
-              value={filters.minSalary}
-              onChange={handleFilterChange}
-            />
-            <span>to</span>
-            <input
-              type="number"
-              name="maxSalary"
-              placeholder="Max"
-              value={filters.maxSalary}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <div className="filter-group">
-            <label>Date Range:</label>
-            <input
-              type="date"
-              name="dateFrom"
-              value={filters.dateFrom}
-              onChange={handleFilterChange}
-            />
-            <span>to</span>
-            <input
-              type="date"
-              name="dateTo"
-              value={filters.dateTo}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <button className="reset-filters" onClick={resetFilters}>
-            Reset Filters
-          </button>
-        </div>
-      </section>
-
-      {/* Results Count */}
-      <div className="results-count">
-        Showing {filteredPayrolls.length} of {payrolls.length} records
+        <nav>
+          <ul>
+            <li className={activeTab === 'transactions' ? 'active' : ''}>
+              <button onClick={() => setActiveTab('transactions')}>
+                📊 Payroll Transactions
+              </button>
+            </li>
+            <li className={activeTab === 'add' ? 'active' : ''}>
+              <button onClick={() => setActiveTab('add')}>
+                ➕ Add New Payroll
+              </button>
+            </li>
+            <li className={activeTab === 'reports' ? 'active' : ''}>
+              <button onClick={() => setActiveTab('reports')}>
+                📑 Generate Reports
+              </button>
+            </li>
+            <li className={activeTab === 'search' ? 'active' : ''}>
+              <button onClick={() => {
+                setActiveTab('search');
+                // Force immediate search when clicking on search tab
+                applyFilters();
+              }}>
+                🔍 Search & Filter
+              </button>
+            </li>
+            <li>
+              <button onClick={() => navigate('/hr-profile')}>
+                ↩️ Back to HR Dashboard
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
 
-      {/* Report Buttons Section */}
-      <section className="report-buttons">
-        <h2>Generate Reports</h2>
-        <div className="buttons-container">
-          <button className="report-button" onClick={generateEmployeeSalaryReport}>
-            Employee Salary Report
-          </button>
-          <button className="report-button" onClick={generatePaymentStatusReport}>
-            Payment Status Report
-          </button>
-          <button className="report-button" onClick={generateTotalPaymentsReport}>
-            Total Payments Report
-          </button>
-          <button className="report-button" onClick={generatePayrollSummaryReport}>
-            Payroll Summary Report
-          </button>
-        </div>
-      </section>
+      {/* Main Content */}
+      <div className="main-content">
+        <header className="content-header">
+          <h1>Payroll Dashboard</h1>
+        </header>
 
-      {/* Add Payroll Form */}
-      <section className="add-payroll">
-        <h2>Add Payroll</h2>
-        <div className="form-container">
-          <input
-            type="text"
-            name="employee"
-            placeholder="Employee Name"
-            value={newPayroll.employee}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="bonus"
-            placeholder="Bonus"
-            value={newPayroll.bonus}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="salary"
-            placeholder="Salary"
-            value={newPayroll.salary}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="date"
-            placeholder="Date"
-            value={newPayroll.date}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="paymentStatus"
-            placeholder="Payment Status"
-            value={newPayroll.paymentStatus}
-            onChange={handleInputChange}
-          />
-          <button onClick={addPayroll}>Add Payroll</button>
-        </div>
-      </section>
-
-      {/* Edit Payroll Form */}
-      {editPayroll && (
-        <section className="edit-payroll">
-          <h2>Edit Payroll</h2>
-          <div className="form-container">
-            <input
-              type="text"
-              name="employee"
-              placeholder="Employee Name"
-              value={editPayroll.employee}
-              onChange={(e) => setEditPayroll({ ...editPayroll, employee: e.target.value })}
-            />
-            <input
-              type="text"
-              name="bonus"
-              placeholder="Bonus"
-              value={editPayroll.bonus}
-              onChange={(e) => setEditPayroll({ ...editPayroll, bonus: e.target.value })}
-            />
-            <input
-              type="text"
-              name="salary"
-              placeholder="Salary"
-              value={editPayroll.salary}
-              onChange={(e) => setEditPayroll({ ...editPayroll, salary: e.target.value })}
-            />
-            <input
-              type="text"
-              name="date"
-              placeholder="Date"
-              value={editPayroll.date}
-              onChange={(e) => setEditPayroll({ ...editPayroll, date: e.target.value })}
-            />
-            <input
-              type="text"
-              name="paymentStatus"
-              placeholder="Payment Status"
-              value={editPayroll.paymentStatus}
-              onChange={(e) => setEditPayroll({ ...editPayroll, paymentStatus: e.target.value })}
-            />
-            <button onClick={updatePayroll}>Update Payroll</button>
-            <button onClick={() => setEditPayroll(null)}>Cancel</button>
+        {/* Status Cards */}
+        <div className="status-cards">
+          <div className="status-card pending-card">
+            <div className="card-icon">🕒</div>
+            <div className="card-content">
+              <h3>Pending</h3>
+              <p className="count">{pendingCount}</p>
+            </div>
           </div>
-        </section>
-      )}
+          <div className="status-card paid-card">
+            <div className="card-icon">✅</div>
+            <div className="card-content">
+              <h3>Paid</h3>
+              <p className="count">{paidCount}</p>
+            </div>
+          </div>
+          <div className="status-card overdue-card">
+            <div className="card-icon">⚠️</div>
+            <div className="card-content">
+              <h3>Overdue</h3>
+              <p className="count">{overdueCount}</p>
+            </div>
+          </div>
+        </div>
 
-      {/* Recent Salary Transactions Table */}
-      <section className="recent-transactions">
-        <h2>Recent Salary Transactions</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Employee Name</th>
-              <th>Bonus</th>
-              <th>Salary</th>
-              <th>Date</th>
-              <th>Payment Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPayrolls.map((payroll, index) => (
-              <tr key={index}>
-                <td>{payroll.employee}</td>
-                <td>{payroll.bonus}</td>
-                <td>{payroll.salary}</td>
-                <td>{payroll.date}</td>
-                <td>
-                  <span className={`status ${payroll.paymentStatus.toLowerCase()}`}>
-                    {payroll.paymentStatus}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    className="payment-button"
-                    onClick={() => handlePayment(payroll.employee)}
-                    disabled={payroll.paymentStatus === "Paid"}
-                  >
-                    {payroll.paymentStatus === "Paid" ? "Paid" : "Pay Now"}
-                  </button>
-                  <button onClick={() => setPayrollToEdit(payroll)}>Edit</button>
-                  <button onClick={() => deletePayroll(payroll._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+        {/* Search and Filter Section - Show when activeTab is 'search' or 'transactions' */}
+        {(activeTab === 'search' || activeTab === 'transactions') && (
+          <section className="search-filter-section">
+            <h2>Search & Filter</h2>
+            
+            <div className="search-filter-row">
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Search by employee name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
 
-      {/* HR Manager Dashboard Navigation Button */}
-      <button 
-        className="hr-dashboard-button"
-        onClick={() => navigate('/hr-profile')}
-      >
-        <i className="fas fa-users"></i> Back
-      </button>
+              <div className="status-filter">
+                <label htmlFor="statusFilter">Payment Status:</label>
+                <select
+                  id="statusFilter"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="status-select"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Overdue">Overdue</option>
+                </select>
+              </div>
+
+              <button className="reset-button" onClick={resetFilters}>
+                Reset
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Results Count */}
+        {(activeTab === 'search' || activeTab === 'transactions') && (
+          <div className="results-count">
+            Showing {filteredPayrolls.length} of {payrolls.length} records
+          </div>
+        )}
+
+        {/* Report Buttons Section - Show when activeTab is 'reports' */}
+        {activeTab === 'reports' && (
+          <section className="report-section">
+            <h2>Generate Reports</h2>
+            <div className="report-cards">
+              <div className="report-card" onClick={generateEmployeeSalaryReport}>
+                <div className="report-icon">💰</div>
+                <div className="report-content">
+                  <h3>Employee Salary Report</h3>
+                  <p>Generate a detailed breakdown of employee salaries and bonuses</p>
+                </div>
+              </div>
+              
+              <div className="report-card" onClick={generatePaymentStatusReport}>
+                <div className="report-icon">📊</div>
+                <div className="report-content">
+                  <h3>Payment Status Report</h3>
+                  <p>View payment status for all employees</p>
+                </div>
+              </div>
+              
+              <div className="report-card" onClick={generatePayrollSummaryReport}>
+                <div className="report-icon">📑</div>
+                <div className="report-content">
+                  <h3>Payroll Summary Report</h3>
+                  <p>Get an overview of total payroll expenses</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Add Payroll Form - Show when activeTab is 'add' */}
+        {activeTab === 'add' && (
+          <section className="add-payroll">
+            <h2>Add New Payroll</h2>
+            <div className="form-container">
+              <div className="form-group">
+                <label htmlFor="employee">Employee Name *</label>
+                <input
+                  type="text"
+                  id="employee"
+                  name="employee"
+                  value={newPayroll.employee}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="salary">Salary *</label>
+                <input
+                  type="text"
+                  id="salary"
+                  name="salary"
+                  value={newPayroll.salary}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="bonus">Bonus</label>
+                <input
+                  type="text"
+                  id="bonus"
+                  name="bonus"
+                  value={newPayroll.bonus}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="date">Date *</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={newPayroll.date}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="paymentStatus">Payment Status *</label>
+                <select
+                  id="paymentStatus"
+                  name="paymentStatus"
+                  value={newPayroll.paymentStatus}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">-- Select Status --</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Overdue">Overdue</option>
+                </select>
+              </div>
+              
+              <div className="form-actions">
+                <button className="submit-button" onClick={addPayroll} disabled={isSubmitting}>
+                  {isSubmitting ? 'Adding...' : 'Add Payroll'}
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Edit Payroll Form - Show when activeTab is 'edit' */}
+        {activeTab === 'edit' && editPayroll && (
+          <section className="edit-payroll">
+            <h2>Edit Payroll</h2>
+            <div className="form-container">
+              <div className="form-group">
+                <label htmlFor="edit-employee">Employee Name *</label>
+                <input
+                  type="text"
+                  id="edit-employee"
+                  name="employee"
+                  value={editPayroll.employee}
+                  onChange={(e) => setEditPayroll({ ...editPayroll, employee: e.target.value })}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-salary">Salary *</label>
+                <input
+                  type="text"
+                  id="edit-salary"
+                  name="salary"
+                  value={editPayroll.salary}
+                  onChange={(e) => setEditPayroll({ ...editPayroll, salary: e.target.value })}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-bonus">Bonus</label>
+                <input
+                  type="text"
+                  id="edit-bonus"
+                  name="bonus"
+                  value={editPayroll.bonus || ''}
+                  onChange={(e) => setEditPayroll({ ...editPayroll, bonus: e.target.value })}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-date">Date *</label>
+                <input
+                  type="date"
+                  id="edit-date"
+                  name="date"
+                  value={editPayroll.date}
+                  onChange={(e) => setEditPayroll({ ...editPayroll, date: e.target.value })}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-paymentStatus">Payment Status *</label>
+                <select
+                  id="edit-paymentStatus"
+                  name="paymentStatus"
+                  value={editPayroll.paymentStatus}
+                  onChange={(e) => setEditPayroll({ ...editPayroll, paymentStatus: e.target.value })}
+                  required
+                >
+                  <option value="">-- Select Status --</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Overdue">Overdue</option>
+                </select>
+              </div>
+              
+              <div className="form-actions">
+                <button className="submit-button" onClick={updatePayroll} disabled={isSubmitting}>
+                  {isSubmitting ? 'Updating...' : 'Update Payroll'}
+                </button>
+                <button className="cancel-button" onClick={() => {
+                  setEditPayroll(null);
+                  setActiveTab('transactions');
+                }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Recent Salary Transactions Table - Always show in transactions tab */}
+        {activeTab === 'transactions' && (
+          <section className="recent-transactions">
+            <h2>Recent Salary Transactions</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee Name</th>
+                  <th>Bonus</th>
+                  <th>Salary</th>
+                  <th>Date</th>
+                  <th>Payment Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredPayrolls.length > 0 ? (
+                  filteredPayrolls.map((payroll, index) => (
+                    <tr key={payroll._id || payroll.id || index}>
+                      <td>{payroll.employee}</td>
+                      <td>{payroll.bonus || '-'}</td>
+                      <td>{payroll.salary}</td>
+                      <td>{payroll.date}</td>
+                      <td>
+                        <span className={`status-badge ${payroll.paymentStatus?.toLowerCase()}`}>
+                          {payroll.paymentStatus}
+                        </span>
+                      </td>
+                      <td className="action-buttons">
+                        <button
+                          className={`payment-button ${payroll.paymentStatus === "Paid" ? "disabled" : ""}`}
+                          onClick={() => handlePayment(payroll._id || payroll.id, payroll.employee)}
+                          disabled={payroll.paymentStatus === "Paid"}
+                        >
+                          {payroll.paymentStatus === "Paid" ? "Paid" : "Pay Now"}
+                        </button>
+                        <button className="edit-button" onClick={() => setPayrollToEdit(payroll)}>
+                          Edit
+                        </button>
+                        <button className="delete-button" onClick={() => deletePayroll(payroll._id || payroll.id)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="no-data">No payroll records found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </section>
+        )}
+      </div>
     </div>
   );
 };

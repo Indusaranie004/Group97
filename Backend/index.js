@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const RegisterController = require("./Controllers/RegisterControllers");
-
+const TrainingRequest = require('./Model/TrainingRequest');
 
 const app = express();
 
@@ -67,6 +67,112 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+
+// Training Requests API Routes
+
+// Submit new training request
+app.post('/api/training-requests', async (req, res) => {
+  try {
+    // Validate required fields
+    const requiredFields = ['memberName', 'contactNumber', 'coachId', 'trainingTopic', 'dateTime'];
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ message: `${field} is required` });
+      }
+    }
+
+    // Create new request with default status
+    const newRequest = new TrainingRequest({
+      ...req.body,
+      status: 'pending', // Set default status
+      createdAt: new Date()
+    });
+    
+    await newRequest.save();
+    res.status(201).json(newRequest);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Get all training requests (for dashboard)
+app.get('/api/training-requests', async (req, res) => {
+  try {
+    // Add optional filtering by status
+    const { status, coachId } = req.query;
+    const filter = {};
+    
+    if (status) filter.status = status;
+    if (coachId) filter.coachId = coachId;
+
+    const requests = await TrainingRequest.find(filter)
+      .sort({ createdAt: -1 });
+      
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get single training request
+app.get('/api/training-requests/:id', async (req, res) => {
+  try {
+    const request = await TrainingRequest.findById(req.params.id);
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+    res.json(request);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Update request status and comments
+app.put('/api/training-requests/:id', async (req, res) => {
+  try {
+    const { status, hrManagerComments } = req.body;
+    
+    // Validate status
+    const validStatuses = ['pending', 'approved', 'rejected', 'completed'];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    const updatedRequest = await TrainingRequest.findByIdAndUpdate(
+      req.params.id,
+      { 
+        status, 
+        hrManagerComments,
+        updatedAt: new Date() 
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedRequest) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    res.json(updatedRequest);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Delete a training request
+app.delete('/api/training-requests/:id', async (req, res) => {
+  try {
+    const deletedRequest = await TrainingRequest.findByIdAndDelete(req.params.id);
+    if (!deletedRequest) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+    res.json({ message: 'Request deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

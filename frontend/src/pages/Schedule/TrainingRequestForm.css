@@ -1,0 +1,106 @@
+/* TrainingRequestForm.css */
+.training-form-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #ecf0f1; /* Light color */
+    padding: 20px;
+  }
+  
+  .training-form-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(44, 62, 80, 0.1); /* Primary color with opacity */
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .training-form-box h2 {
+    color: #2c3e50; /* Primary color */
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+  .form-label {
+    color: #2c3e50; /* Primary color */
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .form-control,
+  .form-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    margin-bottom: 5px;
+  }
+  
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #3498db; /* Secondary color */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); /* Secondary color with opacity */
+  }
+  
+  .btn-primary {
+    background-color: #3498db; /* Secondary color */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2980b9; /* Slightly darker secondary color */
+  }
+  
+  .btn-primary:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+  }
+  
+  .mb-3 {
+    margin-bottom: 20px;
+  }
+  
+  .alert-success {
+    background-color: #1abc9c; /* Accent color */
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .training-form-box {
+      padding: 20px;
+    }
+    
+    .training-form-box h2 {
+      font-size: 24px;
+    }
+  }
+  
+  /* Validation styling */
+  input:invalid, select:invalid {
+    border-color: #e74c3c; /* Warning color */
+  }
+  
+  input:valid, select:valid {
+    border-color: #1abc9c; /* Accent color */
+  }
