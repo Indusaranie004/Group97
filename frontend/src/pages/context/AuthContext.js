@@ -13,13 +13,11 @@ export const AuthProvider = ({ children }) => {
   const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
 
-  // Configure axios instance
   const api = axios.create({
     baseURL: API_BASE_URL,
     timeout: 10000,
   });
 
-  // Add request interceptor for token
   api.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -28,12 +26,10 @@ export const AuthProvider = ({ children }) => {
     return config;
   });
 
-  // Add response interceptor for error handling
   api.interceptors.response.use(
     response => response,
     error => {
       if (error.response?.status === 401) {
-        // Auto-logout if 401 response returned from api
         logout();
         message.error('Session expired. Please login again.');
       }
@@ -41,7 +37,6 @@ export const AuthProvider = ({ children }) => {
     }
   );
 
-  // Check auth status on initial load
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -67,37 +62,34 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // Register new user
+ 
   const register = async (formData) => {
     try {
       setLoading(true);
       const res = await api.post('/auth/register', formData);
       message.success('Registration successful! Please login');
+      window.alert('Registration successful! Please login');
       navigate('/login');
       return res.data;
     } catch (error) {
       const errorMsg = error.response?.data?.message || 'Registration failed';
       message.error(errorMsg);
+      window.alert(errorMsg);
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // User login
   const login = async (formData) => {
     try {
       setLoading(true);
       const res = await api.post('/auth/login', formData);
-      
       localStorage.setItem('token', res.data.token);
       setUser(res.data);
-
-      // Fetch bio data after login
       try {
         const bioRes = await api.get('/biodata');
         setBioData(bioRes.data);
-        
         if (!bioRes.data) {
           message.warning(
             'Please complete your biomedical data for better healthcare services',
@@ -108,7 +100,8 @@ export const AuthProvider = ({ children }) => {
         console.error('Bio data fetch error:', bioError);
         setBioData(null);
       }
-
+      message.success('Login successful!');
+      window.alert('Login successful!');
       navigate('/profile');
       return res.data;
     } catch (error) {
@@ -120,13 +113,13 @@ export const AuthProvider = ({ children }) => {
         }
       }
       message.error(errorMsg);
+      window.alert(errorMsg);
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // User logout
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
@@ -135,7 +128,6 @@ export const AuthProvider = ({ children }) => {
     message.success('Logged out successfully');
   };
 
-  // Get biomedical data
   const getBioData = async () => {
     try {
       const res = await api.get('/biodata');
@@ -152,7 +144,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Save biomedical data (create or update)
   const saveBioData = async (data) => {
     try {
       setLoading(true);
@@ -182,7 +173,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Update user profile
   const updateProfile = async (data) => {
     try {
       setLoading(true);
@@ -199,7 +189,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Forgot password
   const forgotPassword = async (email) => {
     try {
       setLoading(true);
@@ -215,7 +204,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Reset password
   const resetPassword = async (token, password) => {
     try {
       setLoading(true);

@@ -19,11 +19,20 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: 'https://i.pravatar.cc/150?img=3',
   },
+  dateOfBirth: {
+    type: Date,
+    default: null,
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  role: {
+    type: String,
+    enum: ['member', 'coach', 'HR manager', 'financial manager', 'Feedback manager'],
+    default: 'member',
   },
 });
 

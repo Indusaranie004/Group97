@@ -6,12 +6,16 @@ const {
   getUserProfile,
   updateUserProfile,
   deleteUserAccount,
+  getAllUsers,
 } = require('../controllers/userController');
 
 router
   .route('/profile')
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile)
-  .delete(protect, deleteUserAccount);
+  .get(getUserProfile)
+  .put(updateUserProfile)
+  .delete( deleteUserAccount);
+
+router.route('/').get(getAllUsers);
+  
 
 module.exports = router;
