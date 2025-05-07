@@ -1,10 +1,19 @@
 const express = require("express");
 const router = express.Router();
 
-const CashLog = require("../Models/CashLog_Model");
 const CashLog_Ctrl = require("../Controller/CashLog_Ctrl");
+const auth = require("../Middleware/PaymentAuth");  // Assuming you have auth middleware
 
-router.get("/",CashLog_Ctrl.getAll_CashEntries);
-router.post("/",CashLog_Ctrl.Insert_CashEntries);
+// Get all cash entries
+router.get("/Fetch", CashLog_Ctrl.getAll_CashEntries);
+
+// Get cash entry by ID
+router.get("/:id", CashLog_Ctrl.Get_CashEntryById);
+
+// Insert new cash entry
+router.post("/", CashLog_Ctrl.Insert_CashEntries);
+
+// Delete cash entry
+router.delete("/:id", CashLog_Ctrl.Delete_CashEntry);
 
 module.exports = router;

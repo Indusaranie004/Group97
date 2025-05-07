@@ -1,0 +1,209 @@
+/* AssetList.css */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #1abc9c;
+  --warning-color: #e74c3c;
+  --light-color: #ecf0f1;
+  --dark-color: #2c3e50;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-transition: all 0.3s ease;
+}
+
+/* Page container */
+.assets-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Page header */
+.assets-container h2 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin: 0 0 30px 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--light-color);
+}
+
+/* Search section */
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* Search bar styling (adjust based on your SearchBar component) */
+.search-bar {
+  width: 60%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 20px;
+  padding-left: 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: var(--card-shadow);
+  transition: var(--hover-transition);
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  opacity: 0.6;
+}
+
+/* Table styling */
+.assets-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 30px;
+  table-layout: auto;
+}
+
+.assets-table th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  padding: 15px;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.assets-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: var(--dark-color);
+  text-align: left;
+}
+
+.assets-table tr:last-child td {
+  border-bottom: none;
+}
+
+.assets-table tr:hover {
+  background-color: rgba(236, 240, 241, 0.5);
+}
+
+/* Action buttons styling */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-button, .delete-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--hover-transition);
+}
+
+.edit-button {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.delete-button {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* PDF Download button container */
+.pdf-button-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+/* PDF Download button */
+.download-pdf-button {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--hover-transition);
+  display: inline-block;
+}
+
+.download-pdf-button:hover {
+  background-color: #16a085;
+  transform: translateY(-2px);
+}
+
+/* Loading state */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: var(--secondary-color);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  margin: 20px 0;
+}
+
+/* Empty state */
+.assets-container p {
+  text-align: center;
+  padding: 30px;
+  font-size: 16px;
+  color: var(--primary-color);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-bar {
+    width: 100%;
+  }
+  
+  .assets-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

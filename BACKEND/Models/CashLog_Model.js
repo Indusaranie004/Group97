@@ -32,12 +32,7 @@ const CashSchema = new Schema({
         required:false
 
     },
-    recordedBy:{
-
-        type:String,
-        required:true
-
-    },
+    
 });
 
 module.exports = mongoose.model("Cash", CashSchema);

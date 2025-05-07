@@ -1,37 +1,26 @@
-const Validation = (formData) => {
-
-    let errors = {}
-
-    //UserName Validation
-    if(!formData.UserName){
-
-        errors.UserName = "UserName Required"
-
+// loginValidation.js
+const validateLoginForm = (formData) => {
+    const errors = {};
+  
+    // Check for required fields
+    if (!formData.email) {
+      errors.email = 'Email is required';
     }
-
-    else if(formData.UserName.length < 5){
-
-        errors.UserName = "UserName must contain minimum 5 characters."
-
-
+    
+    if (!formData.password) {
+      errors.password = 'Password is required';
     }
-
-    //Password Validation
-    if(!formData.Password){
-
-        errors.Password = "Password Required"
-
+    
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
     }
-
-    else if(formData.Password.length > 15){
-
-        errors.Password = "Password must not contain more than 15 characters."
-
-
-    }
-
-    return errors;
-
-}
-
-export default Validation;
+    
+    return {
+      isValid: Object.keys(errors).length === 0,
+      errors
+    };
+  };
+  
+  export default validateLoginForm;

@@ -1,46 +1,42 @@
-const FMLoginSession = require("../Models/FMLogin_Model");
+const User = require("../Models/StaffMember_Model");
 
-//Recording Login Session Data.
-const Insert_LoginSession = async (req, res, next) => {
-    const { UserName, Password } = req.body;
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-    let FM;
-
-    try {
-        FM = new FMLoginSession({ UserName, Password });
-        await FM.save();
-        return res.status(200).json({ FM });
-    } catch (err) {
-        console.error(err);
-        return res.status(500).send({ message: "Error inserting data", error: err });
+    // Check if email and password exist
+    if (!email || !password) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Please provide email and password'
+      });
     }
-}
 
-//Validating Login Credentials
-const FinMng_Credentials = require("../Models/StaffMember_Model");
+    // Check if user exists & password is correct
+    // Note: We need to explicitly select the password since it's set to 'select: false' in the model
+    const user = await User.findOne({ email }).select('+password');
 
-const Validate_FinancialManager = async (req, res) => {
-    const { UserName, Password } = req.body;
-
-    try {
-        const FM = await FinMng_Credentials.findOne({ UserName });
-
-        if (!FM) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        // Compare the plain password directly
-        if (FM.Password !== Password) {
-            return res.status(401).json({ error: "Incorrect Password" });
-        }
-
-        res.status(200).json({ message: "Login successful", FM });
-    } catch (error) {
-        res.status(500).json({ error: "Server error" });
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Incorrect email or password'
+      });
     }
-};
 
-module.exports = {
-    Insert_LoginSession,
-    Validate_FinancialManager
+    // If everything is OK, send user data to client
+    // Remove password from output
+    user.password = undefined;
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user
+      }
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
 };
