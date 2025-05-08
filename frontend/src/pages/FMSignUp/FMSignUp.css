@@ -1,0 +1,224 @@
+/* FMSignUp.css */
+/* Reset all element styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #1abc9c;
+  --warning-color: #e74c3c;
+  --light-color: #ecf0f1;
+  --dark-color: #2c3e50;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-transition: all 0.3s ease;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-image: url('../../images/SignUpNew.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add an overlay to ensure form readability */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  z-index: -1;
+}
+
+.signup-form-container {
+  width: 100%;
+  max-width: 450px;
+  margin: 0;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.9); /* Made slightly more opaque */
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  z-index: 1;
+  border: none;
+}
+
+/* Add this to target any potential outer container in the parent component */
+[class*="container"], [class*="wrapper"], [class*="page"], [class*="content"] {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.signup-form-container h2 {
+  color: #000000; /* Changed to black */
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Removed text shadow */
+}
+
+/* Style for the new h4 subtext */
+.signup-form-container h4 {
+  color: #000000; /* Changed to black */
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.8; /* Slightly reduced opacity for visual hierarchy */
+  /* Removed text shadow */
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: var(--hover-transition);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.signup-button {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--hover-transition);
+  margin-top: 10px;
+  width: 100%;
+}
+
+.signup-button:hover {
+  background-color: #16a085;
+  transform: translateY(-2px);
+}
+
+.signup-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message, .field-error {
+  color: var(--warning-color);
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.error-message {
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.login-link {
+  color: var(--dark-color);
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--hover-transition);
+}
+
+.login-link a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+/* Password strength indicator */
+.password-strength {
+  margin-top: 5px;
+  height: 5px;
+  border-radius: 2px;
+  transition: var(--hover-transition);
+}
+
+.strength-weak {
+  background-color: var(--warning-color);
+  width: 30%;
+}
+
+.strength-medium {
+  background-color: #f39c12;
+  width: 60%;
+}
+
+.strength-strong {
+  background-color: var(--accent-color);
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .signup-form-container {
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .signup-form-container h2 {
+    font-size: 1.3rem;
+  }
+  
+  .signup-form-container h4 {
+    font-size: 0.9rem;
+  }
+}
